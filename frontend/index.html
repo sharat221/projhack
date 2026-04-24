@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Disaster Response Resource Allocator</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #fff; color: #000; }
+    h1 { text-align: center; }
+    #form, #dashboard, #map { margin: 20px auto; width: 80%; }
+    label { display: block; margin-top: 10px; }
+    input, button { padding: 8px; margin-top: 5px; width: 100%; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #000; padding: 8px; text-align: center; }
+    th { background: #f4f4f4; }
+    .critical { background-color: #ffcccc; }
+    .moderate { background-color: #fff3cd; }
+    .minor { background-color: #d4edda; }
+    #map { height: 400px; }
+  </style>
+</head>
+<body>
+  <h1>Disaster Response Resource Allocator</h1>
+
+  <!-- Incident Input Form -->
+  <div id="form">
+    <h2>Simulated Social Media Input</h2>
+    <label>Post Text:</label>
+    <input type="text" id="postText" placeholder="Enter social media post (e.g., 'Fire near #Delhi')">
+    <button onclick="submitIncident()">Analyze & Allocate</button>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dashboard">
+    <h2>Incident Dashboard</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Type</th>
+          <th>Location</th>
+          <th>Severity</th>
+          <th>Allocated Resource</th>
+        </tr>
+      </thead>
+      <tbody id="incidentTable"></tbody>
+    </table>
+  </div>
+
+  <!-- Map -->
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    let incidentCounter = 1;
+
+    // Initialize map
+    const map = L.map('map').setView([20.5937, 78.9629], 5); // Center on India
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Simple location-to-coordinates mapping (extendable)
+    let locationCoords = {
+      Delhi: [28.7041, 77.1025],
+      Mumbai: [19.0760, 72.8777],
+      Bangalore: [12.9716, 77.5946],
+      Chennai: [13.0827, 80.2707],
+      Kolkata: [22.5726, 88.3639]
+    };
+
+    async function submitIncident() {
+      const text = document.getElementById("postText").value;
+
+      // Send post to backend for allocation
+      const response = await fetch("http://127.0.0.1:5000/api/allocate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ post: text, type: "fire", location: "Delhi" }) 
+        // NOTE: Replace with real NLP classification later
+      });
+
+      const result = await response.json();
+
+      // Add to table
+      const table = document.getElementById("incidentTable");
+      const row = table.insertRow();
+      row.className = result.incident.severity || "moderate";
+      row.insertCell(0).innerText = incidentCounter++;
+      row.insertCell(1).innerText = result.incident.type;
+      row.insertCell(2).innerText = result.incident.location;
+      row.insertCell(3).innerText = result.incident.severity;
+      row.insertCell(4).innerText = result.allocated_resource.name;
+
+      // Add marker to map
+      const loc = result.incident.location;
+      if (locationCoords[loc]) {
+        L.marker(locationCoords[loc])
+          .addTo(map)
+          .bindPopup(`<b>${result.incident.type.toUpperCase()}</b><br>
+                      Severity: ${result.incident.severity}<br>
+                      Resource: ${result.allocated_resource.name}`)
+          .openPopup();
+      }
+    }
+  </script>
+</body>
+</html>

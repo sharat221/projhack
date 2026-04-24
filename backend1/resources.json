@@ -1,0 +1,6 @@
+[
+  { "id": 1, "type": "fire", "name": "Fire Truck 1", "status": "available", "location": "Delhi" },
+  { "id": 2, "type": "flood", "name": "Rescue Boat 1", "status": "available", "location": "Mumbai" },
+  { "id": 3, "type": "medical", "name": "Ambulance 1", "status": "available", "location": "Bangalore" },
+  { "id": 4, "type": "rescue", "name": "Rescue Team 1", "status": "available", "location": "Chennai" }
+]

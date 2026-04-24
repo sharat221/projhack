@@ -1,0 +1,5 @@
+[
+  { "id": 1, "post": "Fire near #Delhi, people trapped!", "type": "fire", "severity": "critical", "location": "Delhi" },
+  { "id": 2, "post": "Flood in #Mumbai, rescue needed", "type": "flood", "severity": "moderate", "location": "Mumbai" },
+  { "id": 3, "post": "Medical emergency in #Bangalore, injured person", "type": "medical", "severity": "critical", "location": "Bangalore" }
+]

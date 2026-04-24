@@ -1,0 +1,29 @@
+# Core framework (pick one if you use it)
+Django==5.0.4
+# or Flask==3.0.2
+# or FastAPI==0.110.0
+
+# Server
+gunicorn==22.0.0
+
+# HTTP requests
+requests==2.31.0
+
+# Environment variables
+python-dotenv==1.0.1
+
+# Data handling
+pandas==2.2.2
+numpy==1.26.4
+
+# Database (choose based on your project)
+psycopg2-binary==2.9.9   # PostgreSQL
+sqlite-utils==3.36       # SQLite
+
+# AI / NLP (optional, if used)
+transformers==4.39.3
+spacy==3.7.4
+
+# Visualization (optional, if used)
+plotly==5.20.0
+streamlit==1.32.0
